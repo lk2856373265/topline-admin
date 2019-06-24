@@ -26,6 +26,7 @@
 <script>
 import axios from 'axios'
 import '@/vendor/gt' // gt.js 会向全局window 暴露一个函数initGeetest
+// import { constants } from 'crypto'
 export default {
   name: 'AppLogin',
   data () {
@@ -65,7 +66,23 @@ export default {
           captchaObj.onReady(function () {
             captchaObj.verify()
           }).onSuccess(function () {
-            console.log('验证成功了')
+            // console.log(captchaObj.getValidate())
+            const {
+              geetest_challenge: challenge,
+              geetest_seccode: seccode,
+              geetest_validate: validate } =
+            captchaObj.getValidate()
+            axios({
+              method: 'GET',
+              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+              params: {
+                challenge,
+                seccode,
+                validate
+              }
+            }).then(res => {
+              console.log(res.data)
+            })
           })
         })
       })
