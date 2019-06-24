@@ -25,6 +25,7 @@
 </template>
 <script>
 import axios from 'axios'
+import '@/vendor/gt' // gt.js 会向全局window 暴露一个函数initGeetest
 export default {
   name: 'AppLogin',
   data () {
