@@ -16,7 +16,7 @@
         </el-form-item>
         <el-form-item>
           <!-- 给组件加class，会作用到他的根元素 -->
-          <el-button type="primary" class="btn-login" @click="onSubmit">登录</el-button>
+          <el-button type="primary" class="btn-login" @click="handleLogin">登录</el-button>
     </el-form-item>
 </el-form>
      </div>
@@ -39,8 +39,21 @@ export default {
     }
   },
   methods: {
-    onSubmit () {
-      console.log('submit!')
+    handleLogin () {
+      axios({
+        method: 'POST',
+        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        data: this.form
+      }).then(res => {
+        // 建议路由传参都使用name 去跳转，路由传参非常方便
+      //  this.$router.push({
+      //    name: 'home'
+      //  })
+        this.$message({
+          message: '登录成功',
+          type: 'success'
+        })
+      })
     },
     handleSendCode () {
       const { mobile } = this.form
