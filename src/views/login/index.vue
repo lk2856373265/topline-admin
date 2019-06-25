@@ -44,16 +44,23 @@ export default {
         method: 'POST',
         url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
         data: this.form
-      }).then(res => {
-        // 建议路由传参都使用name 去跳转，路由传参非常方便
-      //  this.$router.push({
-      //    name: 'home'
-      //  })
+      }).then(res => { // 大于200 && <=400的状态码都会经过这里
         this.$message({
+          showClose: true,
           message: '登录成功',
           type: 'success'
         })
+        // 建议路由传参都使用name 去跳转，路由传参非常方便
+        this.$router.push({
+          name: 'home'
+        })
       })
+        .catch(err => { // >=400的HTTP状态码都会进入catch中
+          if (err.response.status === 400) {
+            this.$message.error('登录失败，手机号或验证码错误')
+          // console.dir(err)
+          }
+        })
     },
     handleSendCode () {
       const { mobile } = this.form
