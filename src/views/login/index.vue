@@ -5,18 +5,23 @@
     <img src="./logo_index.png" alt="黑马头条">
   </div>
      <div class='login-form'>
-    <el-form ref="form" :model="form" >
-        <el-form-item >
+       <!--
+         表单验证:
+         rules: 配置验证规则
+         将需要验证的字段通过prop属性配置到 el-form-item组件上
+         ref：获取表单组件，可以手抖调用表单组件的验证方法 -->
+    <el-form ref="ruleForm" :model="form" :rules="rules">
+        <el-form-item prop="mobile">
           <el-input v-model="form.mobile" placeholder='请输入手机号'></el-input>
         </el-form-item>
-      <el-form-item >
+      <el-form-item prop="code">
         <el-col :span=10><el-input v-model="form.code" placeholder='验证码'></el-input></el-col>
         <el-col :span=10 :offset=4 ><el-button @click="handleSendCode">发送验证码</el-button></el-col>
         <!-- 支持栅格布局 -->
         </el-form-item>
         <el-form-item>
           <!-- 给组件加class，会作用到他的根元素 -->
-          <el-button type="primary" class="btn-login" @click="handleLogin">登录</el-button>
+          <el-button type="primary" class="btn-login" @click="handleLogin('ruleForm')">登录</el-button>
     </el-form-item>
 </el-form>
      </div>
@@ -35,11 +40,31 @@ export default {
         mobile: '17862066801',
         code: ''
       },
+      rules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { len: 11, message: '长度必须为11个数字', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { len: 6, message: '长度必须为6个字符', trigger: 'blur' }
+        ]
+      },
       captchaObj: null // 通过initGeetest 得到的极验验证对象
     }
   },
   methods: {
-    handleLogin () {
+    handleLogin (ruleForm) {
+      // 表单组件有一个方法validate , 可以获取当前表单的验证状态
+      this.$refs[ruleForm].validate((valid) => {
+        if (!valid) {
+          return
+        }
+        // 表单验证通过，提交登录
+        this.login()
+      })
+    },
+    login () {
       axios({
         method: 'POST',
         url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
