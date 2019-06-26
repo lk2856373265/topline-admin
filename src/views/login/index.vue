@@ -16,7 +16,7 @@
         </el-form-item>
       <el-form-item prop="code">
         <el-col :span=10><el-input v-model="form.code" placeholder='验证码'></el-input></el-col>
-        <el-col :span=10 :offset=4 ><el-button @click="handleSendCode">发送验证码</el-button></el-col>
+        <el-col :span=10 :offset=4 ><el-button @click="handleSendCode('ruleForm')">发送验证码</el-button></el-col>
         <!-- 支持栅格布局 -->
         </el-form-item>
         <el-form-item prop='agree'>
@@ -25,7 +25,7 @@
           </el-form-item>
         <el-form-item>
           <!-- 给组件加class，会作用到他的根元素 -->
-          <el-button type="primary" class="btn-login" :loading="loginLoading" @click="handleLogin('ruleForm')">登录</el-button>
+          <el-button  type="primary" class="btn-login" :loading="loginLoading" @click="handleLogin('ruleForm')">登录</el-button>
     </el-form-item>
 </el-form>
      </div>
@@ -100,7 +100,17 @@ export default {
           this.loginLoading = false
         })
     },
-    handleSendCode () {
+    handleSendCode (ruleForm) {
+      // 校验手机号是否有效
+      this.$refs[ruleForm].validateField('mobile', errorMessage => {
+        if (errorMessage.trim().length > 0) {
+          return
+        }
+        // 手机号码有效，初始化验证码
+        this.showGeetest()
+      })
+    },
+    showGeetest () {
       const { mobile } = this.form
       if (this.captchaObj) {
         return this.captchaObj.verify()
