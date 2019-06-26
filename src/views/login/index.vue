@@ -21,7 +21,7 @@
         </el-form-item>
         <el-form-item>
           <!-- 给组件加class，会作用到他的根元素 -->
-          <el-button type="primary" class="btn-login" @click="handleLogin('ruleForm')">登录</el-button>
+          <el-button type="primary" class="btn-login" :loading="loginLoading" @click="handleLogin('ruleForm')">登录</el-button>
     </el-form-item>
 </el-form>
      </div>
@@ -36,11 +36,12 @@ export default {
   name: 'AppLogin',
   data () {
     return {
-      form: {
+      form: { // 表单数据
         mobile: '17862066801',
         code: ''
       },
-      rules: {
+      loginLoading: false, // 登录按钮的loading状态
+      rules: { // 表单验证规则
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { len: 11, message: '长度必须为11个数字', trigger: 'blur' }
@@ -65,6 +66,7 @@ export default {
       })
     },
     login () {
+      this.loginLoading = true
       axios({
         method: 'POST',
         url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
@@ -75,6 +77,7 @@ export default {
           message: '登录成功',
           type: 'success'
         })
+        this.loginLoading = false
         // 建议路由传参都使用name 去跳转，路由传参非常方便
         this.$router.push({
           name: 'home'
@@ -83,8 +86,9 @@ export default {
         .catch(err => { // >=400的HTTP状态码都会进入catch中
           if (err.response.status === 400) {
             this.$message.error('登录失败，手机号或验证码错误')
-          // console.dir(err)
+            // console.dir(err)
           }
+          this.loginLoading = false
         })
     },
     handleSendCode () {
