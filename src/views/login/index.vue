@@ -19,6 +19,10 @@
         <el-col :span=10 :offset=4 ><el-button @click="handleSendCode">发送验证码</el-button></el-col>
         <!-- 支持栅格布局 -->
         </el-form-item>
+        <el-form-item prop='agree'>
+             <el-checkbox v-model="form.agree"></el-checkbox>
+             <span>我已阅读并同意<a href="#">用户协议</a>和<a href="#">隐私条款</a></span>
+          </el-form-item>
         <el-form-item>
           <!-- 给组件加class，会作用到他的根元素 -->
           <el-button type="primary" class="btn-login" :loading="loginLoading" @click="handleLogin('ruleForm')">登录</el-button>
@@ -38,7 +42,8 @@ export default {
     return {
       form: { // 表单数据
         mobile: '17862066801',
-        code: ''
+        code: '',
+        agree: '' // 是否同意用户协议
       },
       loginLoading: false, // 登录按钮的loading状态
       rules: { // 表单验证规则
@@ -49,6 +54,10 @@ export default {
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
           { len: 6, message: '长度必须为6个字符', trigger: 'blur' }
+        ],
+        agree: [
+          { required: true, message: '请同意用户协议', trigger: 'change' },
+          { pattern: /true/, message: '请同意用户协议', trigger: 'change' }
         ]
       },
       captchaObj: null // 通过initGeetest 得到的极验验证对象
