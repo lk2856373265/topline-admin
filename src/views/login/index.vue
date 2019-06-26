@@ -16,7 +16,15 @@
         </el-form-item>
       <el-form-item prop="code">
         <el-col :span=10><el-input v-model="form.code" placeholder='验证码'></el-input></el-col>
-        <el-col :span=10 :offset=4 ><el-button @click="handleSendCode('ruleForm')">发送验证码</el-button></el-col>
+        <el-col :span=10 :offset=4 >
+          <!-- <el-button @click="handleSendCode('ruleForm')">发送验证码</el-button> -->
+          <el-button
+          @click="handleSendCode('ruleForm')"
+          :disabled="!!codeTimer"
+          >
+          {{codeTimer ? `剩余${codeSeconds}秒` : '获取验证码'}}
+          </el-button>
+          </el-col>
         <!-- 支持栅格布局 -->
         </el-form-item>
         <el-form-item prop='agree'>
@@ -35,6 +43,7 @@
 <script>
 import axios from 'axios'
 import '@/vendor/gt' // gt.js 会向全局window 暴露一个函数initGeetest
+const initCodeSeconds = 60
 // import { constants } from 'crypto'
 export default {
   name: 'AppLogin',
@@ -60,7 +69,9 @@ export default {
           { pattern: /true/, message: '请同意用户协议', trigger: 'change' }
         ]
       },
-      captchaObj: null // 通过initGeetest 得到的极验验证对象
+      captchaObj: null, // 通过initGeetest 得到的极验验证对象
+      codeSeconds: initCodeSeconds, // 倒计时时间
+      codeTimer: null // 倒计时定时器
     }
   },
   methods: {
@@ -115,6 +126,7 @@ export default {
       if (this.captchaObj) {
         return this.captchaObj.verify()
       }
+      // 函数中的 function 定义的函数中的this指向window
       axios({
         method: 'GET',
         url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
@@ -131,9 +143,9 @@ export default {
         }, (captchaObj) => {
           this.captchaObj = captchaObj
           // 这里可以调用验证实例 captchaObj 的实例方法
-          captchaObj.onReady(function () {
+          captchaObj.onReady(() => {
             captchaObj.verify()
-          }).onSuccess(function () {
+          }).onSuccess(() => {
             // console.log(captchaObj.getValidate())
             const {
               geetest_challenge: challenge,
@@ -149,11 +161,26 @@ export default {
                 validate
               }
             }).then(res => {
-              console.log(res.data)
+              // console.log(res.data)
+              // 发送短信后开始倒计时
+              this.codeCountDown()
             })
           })
         })
       })
+    },
+    /**
+     * 倒计时
+     */
+    codeCountDown () {
+      this.codeTimer = window.setInterval(() => {
+        this.codeSeconds--
+        if (this.codeSeconds <= 0) {
+          this.codeSeconds = initCodeSeconds // 让倒计时时间回到初始状态
+          window.clearInterval(this.codeTimer) // 清除倒计时
+          this.codeTimer = null // 清除定时器倒计时的标志
+        }
+      }, 1000)
     }
   }
 }
