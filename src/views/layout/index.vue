@@ -1,19 +1,25 @@
 <template>
-  <div>
+<el-container>
+  <el-aside width="200px">Aside</el-aside>
+  <el-container>
+    <el-header>Header</el-header>
+    <el-main>Main</el-main>
+  </el-container>
+</el-container>
+  <!-- <div>
     <AppAside/>
-    <AppHeader/>
+    <AppHeader/> -->
     <!--这里的内容是home，评论文章，发布管理...... -->
-  </div>
+  <!-- </div> -->
 </template>
-
 <script>
-import AppAside from './components/AppAside'
-import AppHeader from './components/AppHeader'
+// import AppAside from './components/AppAside'
+// import AppHeader from './components/AppHeader'
 export default {
   name: 'AppLayout',
   components: {
-    AppAside,
-    AppHeader
+    // AppAside,
+    // AppHeader
   },
   data () {
     return {}
@@ -22,4 +28,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.el-container {
+  height: 100%;
+}
+.el-header {
+  background-color: #aec0d1;
+}
+.el-aside {
+  background-color: #d0dce7;
+}
+.el-main {
+  background-color: #e8eff4;
+}
 </style>
