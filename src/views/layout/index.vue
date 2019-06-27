@@ -1,8 +1,8 @@
 <template>
 <el-container>
-  <el-aside width="200px">Aside</el-aside>
+  <el-aside width="200px"><AppAside/></el-aside>
   <el-container>
-    <el-header>Header</el-header>
+    <el-header><AppHeader/></el-header>
     <el-main>Main</el-main>
   </el-container>
 </el-container>
@@ -13,13 +13,13 @@
   <!-- </div> -->
 </template>
 <script>
-// import AppAside from './components/AppAside'
-// import AppHeader from './components/AppHeader'
+import AppAside from './components/AppAside'
+import AppHeader from './components/AppHeader'
 export default {
   name: 'AppLayout',
   components: {
-    // AppAside,
-    // AppHeader
+    AppAside,
+    AppHeader
   },
   data () {
     return {}
