@@ -4,6 +4,9 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './styles/index.less'
+
+import 'nprogress/nprogress.css'
+
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 new Vue({
