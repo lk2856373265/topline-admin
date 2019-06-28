@@ -33,11 +33,11 @@
         <i class="el-icon-edit"></i>
         <span slot="title">发布文章</span>
       </el-menu-item>
-      <el-menu-item index="1-3">
+      <el-menu-item index="/article">
         <i class="el-icon-tickets"></i>
         <span slot="title">内容列表</span>
       </el-menu-item>
-      <el-menu-item index="1-4">
+      <el-menu-item index="/comment">
         <i class="el-icon-chat-line-round"></i>
         <span slot="title">评论列表</span>
       </el-menu-item>

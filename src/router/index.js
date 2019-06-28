@@ -6,7 +6,7 @@ Vue.use(Router)
 const router = new Router({
   routes: [
     {
-      name: 'layout',
+      // name: 'layout', 由于它有默认子路由，所以他的名字没有意义，否则vue会黄牌警告
       path: '/',
       component: () => import('@/views/layout'),
       // 嵌套路由
@@ -20,6 +20,11 @@ const router = new Router({
           name: 'publish',
           path: '/publish',
           component: () => import('@/views/publish')
+        },
+        {
+          name: 'article-list',
+          path: '/article',
+          component: () => import('@/views/article')
         }
       ]
     },
