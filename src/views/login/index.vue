@@ -41,7 +41,7 @@
     </div>
 </template>
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 import '@/vendor/gt' // gt.js 会向全局window 暴露一个函数initGeetest
 const initCodeSeconds = 60
 // import { constants } from 'crypto'
@@ -89,9 +89,9 @@ export default {
     },
     login () {
       this.loginLoading = true
-      axios({
+      this.$http({
         method: 'POST',
-        url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+        url: '/authorizations',
         data: this.form
       }).then(res => { // 大于200 && <=400的状态码都会经过这里
       // 登录成功，将接口返回的用户信息数据放到本地存储
@@ -151,9 +151,9 @@ export default {
       const { mobile } = this.form
       console.log(mobile)
       // 函数中的 function 定义的函数中的this指向window
-      axios({
+      this.$http({
         method: 'GET',
-        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.form.mobile}`
+        url: `/captchas/${this.form.mobile}`
       }).then(res => {
         const data = res.data.data
         // console.log(res.data)
@@ -180,9 +180,9 @@ export default {
               geetest_seccode: seccode,
               geetest_validate: validate } =
             captchaObj.getValidate()
-            axios({
+            this.$http({
               method: 'GET',
-              url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${this.form.mobile}`,
+              url: `sms/codes/${this.form.mobile}`,
               params: {
                 challenge,
                 seccode,
