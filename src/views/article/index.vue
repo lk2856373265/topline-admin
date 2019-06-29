@@ -41,23 +41,40 @@
         <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
       <!-- table 表格 -->
+      <!--
+        data用来指定表格的数据
+        表格不需要我们手动遍历
+        只需要把数据给el-table的data属性就可以了
+        然后配置el-table-column需要展示的数据字段即可
+       -->
         <el-table
         class="list-table"
-        :data="tableData"
+        :data="articles"
         style="width: 100%">
         <el-table-column
-          prop="date"
-          label="日期"
+          prop="cover.images[0]"
+          label="封面"
+          width="60">
+        <!-- 表格列默认只能输出文本，如果需要自定义里面的内容，则需要 -->
+        <!-- slot-scope 是插槽作用域，先听这个名词，scope 中有个成员叫row
+        scope.row就是当前的遍历项对象 -->
+         <template slot-scope="scope">
+            <img width="50" :src="scope.row.cover.images[0]" alt="">
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          label="标题"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="姓名"
+          prop="pubdate"
+          label="发布日期"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="地址">
+          prop="status"
+          label="发布状态">
         </el-table-column>
       </el-table>
       <!-- /table 表格 -->
@@ -79,23 +96,7 @@ export default {
   name: 'ArticleList',
   data () {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
+      articles: [],
       form: {
         name: '',
         region: '',
@@ -117,7 +118,7 @@ export default {
         // Authorization: `Bearer ${userInfo.token}` // 注意 Bearer和token之间要有空格
       }
     }).then(data => {
-      console.log(data)
+      this.articles = data.results
     })
   },
   methods: {
