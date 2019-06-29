@@ -15,6 +15,22 @@ axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 // 我们可以将一些频繁使用的成员放到Vue.prototype中，然后就可以在组件中直接this.xxx使用了
 // Vue.prototype.foo = 'bar'
 
+// Add a request interceptor（axios请求拦截器）
+axios.interceptors.request.use(config => {
+  const userInfo = JSON.parse(window.localStorage.getItem('user_info'))
+  config.headers.Authorization = `Bearer ${userInfo.token}`
+  // console.log('有请求经过了')
+  console.log(config)
+  return config // 允许通过的方式，本次请求相关的配置对象
+}, error => {
+  return Promise.reject(error)
+})
+// Add a response interceptor（axios响应拦截器）
+axios.interceptors.response.use(response => {
+  return response
+}, error => {
+  return Promise.reject(error)
+})
 // 往Vue原型对象中添加成员，尽量使用 $名字 起名字，目的是防止和组件中的成员冲突
 Vue.prototype.$http = axios
 
