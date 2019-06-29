@@ -18,7 +18,9 @@ axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 // Add a request interceptor（axios请求拦截器）
 axios.interceptors.request.use(config => {
   const userInfo = JSON.parse(window.localStorage.getItem('user_info'))
-  config.headers.Authorization = `Bearer ${userInfo.token}`
+  if (userInfo) { // 如果登录了，才给那些需要token的接口添加token令牌
+    config.headers.Authorization = `Bearer ${userInfo.token}`
+  }
   // console.log('有请求经过了')
   console.log(config)
   return config // 允许通过的方式，本次请求相关的配置对象
@@ -31,6 +33,14 @@ axios.interceptors.response.use(response => { // >=200&&<400的状态码会进�
   // console.log('response =>', response)
   return response.data.data
 }, error => { // >400的状态码会进入这里
+  const status = error.response.status
+  if (status === 401) {
+    // 务必删除本地存储中的用户信息数据
+    window.localStorage.removeItem('user_info')
+    router.push({
+      name: 'login'
+    })
+  }
   return Promise.reject(error)
 })
 // 往Vue原型对象中添加成员，尽量使用 $名字 起名字，目的是防止和组件中的成员冲突

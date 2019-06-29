@@ -116,8 +116,8 @@ export default {
       headers: { // 自定义发送请求头
         // Authorization: `Bearer ${userInfo.token}` // 注意 Bearer和token之间要有空格
       }
-    }).then(res => {
-      console.log(res)
+    }).then(data => {
+      console.log(data)
     })
   },
   methods: {
