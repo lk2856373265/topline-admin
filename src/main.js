@@ -26,9 +26,11 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error)
 })
 // Add a response interceptor（axios响应拦截器）
-axios.interceptors.response.use(response => {
-  return response
-}, error => {
+// 统一处理响应的格式
+axios.interceptors.response.use(response => { // >=200&&<400的状态码会进入这里
+  // console.log('response =>', response)
+  return response.data.data
+}, error => { // >400的状态码会进入这里
   return Promise.reject(error)
 })
 // 往Vue原型对象中添加成员，尽量使用 $名字 起名字，目的是防止和组件中的成员冲突

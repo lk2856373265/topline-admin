@@ -93,9 +93,9 @@ export default {
         method: 'POST',
         url: '/authorizations',
         data: this.form
-      }).then(res => { // 大于200 && <=400的状态码都会经过这里
+      }).then(data => { // 大于200 && <=400的状态码都会经过这里
       // 登录成功，将接口返回的用户信息数据放到本地存储
-        window.localStorage.setItem('user_info', JSON.stringify(res.data.data))
+        window.localStorage.setItem('user_info', JSON.stringify(data))
         this.$message({
           showClose: true,
           message: '登录成功',
@@ -154,8 +154,8 @@ export default {
       this.$http({
         method: 'GET',
         url: `/captchas/${this.form.mobile}`
-      }).then(res => {
-        const data = res.data.data
+      }).then(data => {
+        // const data = res.data.data
         // console.log(res.data)
         window.initGeetest({
         // 以下配置参数来自服务端 SDK
@@ -188,7 +188,7 @@ export default {
                 seccode,
                 validate
               }
-            }).then(res => {
+            }).then(data => {
               // console.log(res.data)
               // 发送短信后开始倒计时
               this.codeCountDown()
