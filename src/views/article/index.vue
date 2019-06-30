@@ -72,11 +72,13 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="status"
           label="发布状态">
+          <template slot-scope="scope">
+          <el-tag :type="statTypes[scope.row.status].type">{{ statTypes[scope.row.status].lable }}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column
-          label="发布状态">
+          label="操作">
           <template slot-scope="scope">
             <el-button plain type="success">修改</el-button>
             <el-button plain type="danger" @click='handleDelete(scope.row)'>删除</el-button>
@@ -122,7 +124,29 @@ export default {
         value1: ''
       },
       totalCount: 0,
-      articleLoading: false
+      articleLoading: false,
+      statTypes: [
+        {
+          type: 'info',
+          lable: '草稿'
+        },
+        {
+          type: '',
+          lable: '待审核'
+        },
+        {
+          type: 'success',
+          lable: '审核通过'
+        },
+        {
+          type: 'warning',
+          lable: '审核失败'
+        },
+        {
+          type: 'danger',
+          lable: '已删除'
+        }
+      ]
     }
   },
   created () {
