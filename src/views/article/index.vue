@@ -151,15 +151,35 @@ export default {
       console.log('submit!')
     },
     handleCurrentChange (page) {
+      this.page = page
+      // 当页码发生改变的时候，请求对应页码的数据
       this.onloadArticles(page)
     },
     handleDelete (article) {
-      this.$http({
-        method: 'DELETE',
-        url: `/articles/${article.id}`
-      }).then(data => {
-        // console.log(data)
-        this.onloadArticles()
+      this.$confirm('确认删除吗?', '删除提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 发送删除请求
+        this.$http({
+          method: 'DELETE',
+          url: `/articles/${article.id}`
+        }).then(data => {
+          // 提示删除成功
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          // console.log(data)
+          // 重新加载数据列表
+          this.onloadArticles(this.page)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }
