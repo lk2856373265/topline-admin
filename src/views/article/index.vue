@@ -11,12 +11,12 @@
           <el-radio  label="">全部</el-radio>
           <el-radio v-for="(item, index) in statTypes"
            :key="item.lable"
-           :label="index"
+           :label="index + ''"
            >{{ item.lable }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="频道">
-        <el-select v-model="filterParams.channels_id" placeholder="请选择">
+        <el-select v-model="filterParams.channel_id" placeholder="请选择">
           <el-option
           v-for="item in channels"
           :key="item.id"
@@ -45,7 +45,7 @@
       <!-- 列表 -->
     <el-card class="list-card">
       <div slot="header" class="clearfix">
-        <span>共找到15条符合条件的内容</span>
+        <span>共找到{{ totalCount }}条符合条件的内容</span>
       </div>
       <!-- table 表格 -->
       <!--
@@ -175,6 +175,14 @@ export default {
   methods: {
     onloadArticles (page = 1) { // 函数参数的默认值
       this.articleLoading = true
+      const filterData = {}
+      for (let key in this.filterParams) {
+        if (this.filterParams[key]) {
+          filterData[key] = this.filterParams[key]
+        }
+      }
+      console.log(filterData)
+
       this.$http({
         method: 'GET',
         url: '/articles',
@@ -183,7 +191,8 @@ export default {
         // },
         params: {
           page, // 请求数据的页码，不传默认为1
-          per_page: 10 // 请求数据的每页大小，不传默认为10
+          per_page: 10, // 请求数据的每页大小，不传默认为10
+          ...filterData
         }
       }).then(data => {
         this.articles = data.results // 列表数据
@@ -192,7 +201,7 @@ export default {
       })
     },
     onSubmit () {
-      console.log('submit!')
+      this.onloadArticles()
     },
     handleCurrentChange (page) {
       this.page = page
