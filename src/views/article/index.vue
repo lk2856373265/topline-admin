@@ -5,7 +5,7 @@
       <div slot="header" class="clearfix">
         <span>筛选条件</span>
       </div>
-        <el-form ref="form" :model="form" label-width="80px">
+        <el-form ref="form" :model="filterParams" label-width="80px">
        <el-form-item label="状态">
         <el-radio-group v-model="filterParams.status">
           <el-radio  label="">全部</el-radio>
@@ -17,6 +17,7 @@
       </el-form-item>
       <el-form-item label="频道">
         <el-select v-model="filterParams.channel_id" placeholder="请选择">
+          <el-option label="全部" value=""></el-option>
           <el-option
           v-for="item in channels"
           :key="item.id"
@@ -99,6 +100,8 @@
       <!-- 1.分多少页
           每页多大，默认10条每页，接口也是默认10条
           有多少条数据
+          total:总记录数
+          current-page：当前页码
            2.页面改变，加载对应的页码数据
        -->
     <el-pagination
@@ -106,6 +109,7 @@
           layout="prev, pager, next"
           :total="totalCount"
           :disabled="articleLoading"
+          :current-page="page"
           @current-change="handleCurrentChange">
     </el-pagination>
     <!-- /分页 -->
@@ -121,19 +125,9 @@ export default {
   data () {
     return {
       articles: [],
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: '',
-        value1: ''
-      },
       totalCount: 0,
       articleLoading: false,
+      page: 1,
       statTypes: [
         {
           type: 'info',
@@ -181,7 +175,7 @@ export default {
           filterData[key] = this.filterParams[key]
         }
       }
-      console.log(filterData)
+      // console.log(filterData)
 
       this.$http({
         method: 'GET',
@@ -201,7 +195,8 @@ export default {
       })
     },
     onSubmit () {
-      this.onloadArticles()
+      this.page = 1 // 让分页组件的代码回到第一页
+      this.onloadArticles() // 加载第一页的数据
     },
     handleCurrentChange (page) {
       this.page = page
