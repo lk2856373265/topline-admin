@@ -6,16 +6,22 @@
         <span>筛选条件</span>
       </div>
         <el-form ref="form" :model="form" label-width="80px">
-       <el-form-item label="特殊资源">
+       <el-form-item label="状态">
         <el-radio-group v-model="form.resource">
-          <el-radio label="线上品牌商赞助"></el-radio>
-          <el-radio label="线下场地免费"></el-radio>
+          <el-radio v-for="item in statTypes"
+           :key="item.lable"
+           :label="item.lable"
+           ></el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="活动区域">
-        <el-select v-model="form.region" placeholder="请选择活动区域">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+      <el-form-item label="频道">
+        <el-select v-model="form.region" placeholder="请选择">
+          <el-option
+          v-for="item in channels"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="活动形式">
@@ -146,11 +152,15 @@ export default {
           type: 'danger',
           lable: '已删除'
         }
-      ]
+      ],
+      channels: [] // 频道列表
     }
   },
   created () {
+    // 加载文章列表
     this.onloadArticles()
+    // 加载文章频道
+    this.onloadChanmels()
   },
   methods: {
     onloadArticles (page = 1) { // 函数参数的默认值
@@ -178,6 +188,14 @@ export default {
       this.page = page
       // 当页码发生改变的时候，请求对应页码的数据
       this.onloadArticles(page)
+    },
+    onloadChanmels () {
+      this.$http({
+        method: 'GET',
+        url: '/channels'
+      }).then(data => {
+        this.channels = data.channels
+      })
     },
     handleDelete (article) {
       this.$confirm('确认删除吗?', '删除提示', {
