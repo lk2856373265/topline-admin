@@ -4,7 +4,6 @@
     <el-card class="filter-card">
       <div slot="header" class="clearfix">
         <span>筛选条件</span>
-        <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
         <el-form ref="form" :model="form" label-width="80px">
        <el-form-item label="特殊资源">
@@ -38,7 +37,6 @@
     <el-card class="list-card">
       <div slot="header" class="clearfix">
         <span>共找到15条符合条件的内容</span>
-        <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
       <!-- table 表格 -->
       <!--
@@ -76,6 +74,13 @@
         <el-table-column
           prop="status"
           label="发布状态">
+        </el-table-column>
+        <el-table-column
+          label="发布状态">
+          <template slot-scope="scope">
+            <el-button plain type="success">修改</el-button>
+            <el-button plain type="danger" @click='handleDelete(scope.row)'>删除</el-button>
+            </template>
         </el-table-column>
       </el-table>
       <!-- /table 表格 -->
@@ -147,6 +152,14 @@ export default {
     },
     handleCurrentChange (page) {
       this.onloadArticles(page)
+    },
+    handleDelete (article) {
+      this.$http({
+        method: 'DELETE',
+        url: `/articles/${article.id}`
+      }).then(data => {
+        console.log(data)
+      })
     }
   }
 }

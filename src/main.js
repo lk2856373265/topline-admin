@@ -5,12 +5,18 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './styles/index.less'
 import axios from 'axios'
+import JSONbig from 'json-bigint'
 
 import 'nprogress/nprogress.css'
 
 // 配置axios的基础路由
 // 有了此项配置，就不用每次都写 http://xxxx
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+// 由于后端的数据id超出了Javascript的安全整数范围，会导致整数无法精确子显示
+// 使用JSONbig 处理返回数据中超出JavaScript安全整数范围的数字
+axios.defaults.transformResponse = [function (data) {
+  return JSONbig.parse(data)
+}]
 // 几乎每个组件都要使用axios去发请求，频繁的使用import就非常麻烦
 // 我们可以将一些频繁使用的成员放到Vue.prototype中，然后就可以在组件中直接this.xxx使用了
 // Vue.prototype.foo = 'bar'
@@ -31,6 +37,7 @@ axios.interceptors.request.use(config => {
 // 统一处理响应的格式
 axios.interceptors.response.use(response => { // >=200&&<400的状态码会进入这里
   // console.log('response =>', response)
+  // 将响应数据处理成统一的数据格式方便使用
   return response.data.data
 }, error => { // >400的状态码会进入这里
   const status = error.response.status
