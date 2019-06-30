@@ -158,7 +158,8 @@ export default {
         method: 'DELETE',
         url: `/articles/${article.id}`
       }).then(data => {
-        console.log(data)
+        // console.log(data)
+        this.onloadArticles()
       })
     }
   }
