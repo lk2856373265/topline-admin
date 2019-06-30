@@ -79,10 +79,16 @@
       </el-table>
       <!-- /table 表格 -->
       <!-- 分页 -->
+      <!-- 1.分多少页
+          每页多大，默认10条每页，接口也是默认10条
+          有多少条数据
+           2.页面改变，加载对应的页码数据
+       -->
     <el-pagination
           background
           layout="prev, pager, next"
-          :total="1000">
+          :total="totalCount"
+          @current-change="handleCurrentChange">
     </el-pagination>
     <!-- /分页 -->
     </el-card>
@@ -107,23 +113,35 @@ export default {
         resource: '',
         desc: '',
         value1: ''
-      }
+      },
+      totalCount: 0
     }
   },
   created () {
-    this.$http({
-      method: 'GET',
-      url: '/articles',
-      headers: { // 自定义发送请求头
-        // Authorization: `Bearer ${userInfo.token}` // 注意 Bearer和token之间要有空格
-      }
-    }).then(data => {
-      this.articles = data.results
-    })
+    this.onloadArticles()
   },
   methods: {
+    onloadArticles (page = 1) { // 函数参数的默认值
+      this.$http({
+        method: 'GET',
+        url: '/articles',
+        // headers: { // 自定义发送请求头
+        //   // Authorization: `Bearer ${userInfo.token}` // 注意 Bearer和token之间要有空格
+        // },
+        params: {
+          page, // 请求数据的页码，不传默认为1
+          per_page: 10 // 请求数据的每页大小，不传默认为10
+        }
+      }).then(data => {
+        this.articles = data.results // 列表数据
+        this.totalCount = data.total_count // 总记录数
+      })
+    },
     onSubmit () {
       console.log('submit!')
+    },
+    handleCurrentChange (page) {
+      this.onloadArticles(page)
     }
   }
 }
