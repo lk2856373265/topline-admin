@@ -16,15 +16,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="频道">
-        <el-select v-model="filterParams.channel_id" placeholder="请选择">
-          <el-option label="全部" value=""></el-option>
-          <el-option
-          v-for="item in channels"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-          ></el-option>
-        </el-select>
+        <article-channel v-model="filterParams.channel_id"></article-channel>
       </el-form-item>
       <el-form-item label="活动形式">
         <el-date-picker
@@ -120,8 +112,12 @@
 
 <script>
 // const userInfo = JSON.parse(window.localStorage.getItem('user_info'))
+import ArticleChannel from '@/components/article-channel'
 export default {
   name: 'ArticleList',
+  components: {
+    ArticleChannel
+  },
   data () {
     return {
       articles: [],
@@ -150,7 +146,6 @@ export default {
           lable: '已删除'
         }
       ],
-      channels: [], // 频道列表
       filterParams: { // 文章查询条件参数
         status: '', // 文章状态
         channel_id: '', // 频道id
@@ -163,8 +158,6 @@ export default {
   created () {
     // 加载文章列表
     this.onloadArticles()
-    // 加载文章频道
-    this.onloadChanmels()
   },
   methods: {
     onloadArticles (page = 1) { // 函数参数的默认值
@@ -202,14 +195,6 @@ export default {
       this.page = page
       // 当页码发生改变的时候，请求对应页码的数据
       this.onloadArticles(page)
-    },
-    onloadChanmels () {
-      this.$http({
-        method: 'GET',
-        url: '/channels'
-      }).then(data => {
-        this.channels = data.channels
-      })
     },
     handleDelete (article) {
       this.$confirm('确认删除吗?', '删除提示', {
