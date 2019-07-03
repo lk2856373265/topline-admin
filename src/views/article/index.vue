@@ -113,6 +113,8 @@
 <script>
 // const userInfo = JSON.parse(window.localStorage.getItem('user_info'))
 import ArticleChannel from '@/components/article-channel'
+// require styles
+
 export default {
   name: 'ArticleList',
   components: {
