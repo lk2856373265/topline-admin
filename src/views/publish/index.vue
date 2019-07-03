@@ -3,8 +3,14 @@
     <div slot="header" class="header">
       <span>发布文章</span>
       <div>
-        <el-button type="success" @click="handlePublish(false)">{{ isEdit? '修改' : '发布'}}</el-button>
-        <el-button type="primary" @click="handlePublish(true)">存入草稿</el-button>
+        <el-button type="success"
+         @click="handlePublish(false)"
+         :loading="publishLoading"
+         >{{ isEdit? '修改' : '发布'}}</el-button>
+        <el-button type="primary"
+         @click="handlePublish(true)"
+         :loading="publishLoading"
+         >存入草稿</el-button>
       </div>
     </div>
     <el-form v-loading="isEdit && editLoading">
@@ -70,7 +76,8 @@ export default {
         channel_id: '' // 频道
       },
       editorOption: {}, //  富文本编辑器相关参数选项
-      editLoading: false
+      editLoading: false,
+      publishLoading: false
     }
   },
   computed: {
@@ -79,6 +86,9 @@ export default {
     },
     isEdit () {
       return this.$route.name === 'publish-edit'
+    },
+    articleId () {
+      return this.$route.params.id
     }
   },
   created () {
@@ -95,7 +105,7 @@ export default {
       this.editLoading = true
       this.$http({
         method: 'GET',
-        url: `/articles/${this.$route.params.id}`
+        url: `/articles/${this.articleId}`
       }).then(data => {
         this.articleForm = data
         this.editLoading = false
@@ -105,7 +115,39 @@ export default {
       ])
     },
     handlePublish (draft = false) {
-      this.$http({
+      this.publishLoading = true
+      if (this.isEdit) {
+        // 执行编辑操作
+        this.handleSubmitEdit(draft).then(() => {
+          this.publishLoading = false
+        })
+      } else {
+        // 执行添加操作
+        this.handleSubmitAdd(draft).then(() => {
+          this.publishLoading = false
+        })
+      }
+    },
+    handleSubmitEdit (draft) {
+      return this.$http({
+        method: 'PUT',
+        url: `/articles/${this.articleId}`,
+        data: this.articleForm,
+        params: {
+          draft
+        }
+      }).then(data => {
+        this.$message({
+          type: 'success',
+          message: '修改成功'
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('修改失败')
+      })
+    },
+    handleSubmitAdd (draft) {
+      return this.$http({
         method: 'POST',
         url: '/articles',
         data: this.articleForm,
