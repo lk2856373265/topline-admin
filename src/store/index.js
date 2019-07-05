@@ -22,15 +22,18 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   // state存储容器的数据，类似于组件中的data
   state: {
-    count: 0
+    user: JSON.parse(window.localStorage.getItem('user_info'))
   },
   // mutation类似于组件中的methods
   // 记住一个原则：修改state永远通过mutation函数修改 不要在组件中this.$store.state.xxx = xxx修改
   // 函数自己定义，函数默认接收一个参数state，也就是容器中的state
   // 我们可以在mutation函数中去 state.xxx = xxx
   mutations: {
-    increment (state) {
-      state.count++
+    changeUser (state, data) {
+      // 修改容器中的用户信息。对象拷贝，将data中的数据成员拷贝到state.user中
+      Object.assign(state.user, data)
+      // 将修改后的用户信息保存到本地存储
+      window.localStorage.setItem('user_info', JSON.stringify(state.user))
     }
   }
 })

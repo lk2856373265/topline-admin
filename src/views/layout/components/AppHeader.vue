@@ -4,8 +4,8 @@
     <el-col :span="10">
             <el-dropdown trigger="click">
         <span class="el-dropdown-link">
-          <img width="30" :src="user_info.photo" alt="">
-          {{ user_info.name }}<i class="el-icon-arrow-down el-icon--right"></i>
+          <img width="30" :src="$store.state.user.photo" alt="">
+          {{ $store.state.user.name }}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>账户设置</el-dropdown-item>
@@ -26,11 +26,11 @@ export default {
   name: 'AppHeader',
   data () {
     return {
-      user_info: {}
+      // user_info: {}
     }
   },
   created () {
-    this.user_info = JSON.parse(window.localStorage.getItem('user_info'))
+    // this.user_info = JSON.parse(window.localStorage.getItem('user_info'))
   },
   methods: {
     handleLogout () {
@@ -39,7 +39,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        // 清楚本地用户中的存储信息 user_info
+        // 清楚本地用户中的存储信息 $store.state.user
         window.localStorage.removeItem('user_info')
         this.$message({
           type: 'success',
