@@ -6,6 +6,11 @@
  * 在任何组件中都可以通过 this.$store.state.xxx 来访问
  * state 中的数据也是响应式的，数据改变也会驱动视图更新
  * 修改
+ * 不要在组件中直接 this.$store.state.xxx = xxx 修改容器数据
+ * 正确是修改方式是：
+ * 1.在容器中定义mutation函数 修改state状态
+ * 2.在组件中提交mutation 完成对状态的修改
+ * 说白了，就是不要在组件中修改state数据，而是在容器中修改state数据
  */
 // 1.npm i vuex
 // 2.配置
@@ -15,10 +20,14 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 // 3.创建容器对象
 const store = new Vuex.Store({
-  // state存储容器的数据
+  // state存储容器的数据，类似于组件中的data
   state: {
     count: 0
   },
+  // mutation类似于组件中的methods
+  // 记住一个原则：修改state永远通过mutation函数修改 不要在组件中this.$store.state.xxx = xxx修改
+  // 函数自己定义，函数默认接收一个参数state，也就是容器中的state
+  // 我们可以在mutation函数中去 state.xxx = xxx
   mutations: {
     increment (state) {
       state.count++
