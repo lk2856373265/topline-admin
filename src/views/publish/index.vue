@@ -78,7 +78,8 @@ export default {
       editorOption: {}, //  富文本编辑器相关参数选项
       editLoading: false,
       publishLoading: false,
-      formDirty: false
+      formDirty: false,
+      firstEditData: false
     }
   },
   /**
@@ -90,7 +91,12 @@ export default {
   watch: {
     articleForm: {
       handler () { // 当被监视数据发生改变时会被调用
-        this.formDirty = true
+      // 如果是第一次编辑更新导致的数据的改变，不让this.formDirty为true
+        if (this.firstEditData) {
+          this.formDirty = false
+        } else {
+          this.formDirty = true
+        }
       },
       deep: true // 对象、数组类型需要配置深度监视，普通数据不需要
       // immidiate: true或false 默认只有当被监视成员发生改变时才会调用监视函数，如果希望初始的时候就调用一次，则可以配置该值为true
@@ -123,6 +129,10 @@ export default {
         method: 'GET',
         url: `/articles/${this.articleId}`
       }).then(data => {
+        // 编辑页面，修改表单数据，动态加载表单内容
+        // 这个数据的修改也会触发对表单数据的监视
+        // 这个数据非用户修改的数据，所以不需要监视
+
         this.articleForm = data
         this.editLoading = false
       }).catch(err => [
