@@ -50,10 +50,9 @@
           class="avatar-uploader"
           action="http://ttapi.research.itcast.cn/mp/v1_0/user/photo"
           :show-file-list="false"
-          :headers="{ Authorization: token }"
-          name='photo'
           :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
+          :before-upload="beforeAvatarUpload"
+          :http-request="handleUpload">
           <img v-if="userInfo.photo" :src="userInfo.photo" >
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -63,6 +62,7 @@
 </template>
 
 <script>
+// import { format } from 'path'
 export default {
   name: 'AccountSetting',
   data () {
@@ -104,7 +104,29 @@ export default {
       })
     },
     handleAvatarSuccess () {},
-    beforeAvatarUpload () {}
+    beforeAvatarUpload () {},
+    handleUpload (uploadConfig) {
+      // axios上传文件
+      // 1.构建一个FormData 表单对象
+      // 将文件对象添加到FormData中
+      // 2.将FormData配置到请求体data选项中
+      const formData = new FormData()
+      formData.append('photo', uploadConfig.file)
+      this.$http({
+        method: 'PATCH',
+        url: '/user/photo',
+        data: formData
+      }).then(data => {
+        this.userInfo.photo = data.photo
+        this.$message({
+          type: 'success',
+          message: '上传成功'
+        }).catch(err => {
+          console.log(err)
+          this.$message.error('上传失败')
+        })
+      })
+    }
   }
 }
 </script>
