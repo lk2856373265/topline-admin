@@ -3,6 +3,7 @@
      <p>粉丝概况 Component</p>
     <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
     <div id="main" style="width: 600px;height:400px;"></div>
+    <EChartsBar/>
 </div>
 </template>
 
@@ -13,8 +14,12 @@
 // 4.基于DOM容器初始化echarts
 
 import echarts from 'echarts'
+import EChartsBar from './components/echarts-bar.vue'
 export default {
   name: 'FansOverview',
+  components: {
+    EChartsBar
+  },
   data () {
     return {}
   },
@@ -28,10 +33,10 @@ export default {
         text: 'ECharts 入门示例'
       },
       tooltip: {},
-      xAxis: {
+      xAxis: { // x轴数据
         data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
       },
-      yAxis: {},
+      yAxis: {}, // y轴配置项
       series: [{
         name: '销量',
         type: 'bar',
