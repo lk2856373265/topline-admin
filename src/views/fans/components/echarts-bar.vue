@@ -15,18 +15,21 @@ import echarts from 'echarts'
 export default {
   name: '',
   data () {
-    return {}
+    return {
+      myChart: null
+    }
   },
   mounted () {
     // 初始化图表组件
     this.initChart()
     // 发请求，更新数据
+    this.loadData()
   },
   methods: {
     initChart () {
-      var myChart = echarts.init(this.$refs.main)
+      this.myChart = echarts.init(this.$refs.main)
       // 显示标题，图例和空的坐标轴
-      myChart.setOption({
+      this.myChart.setOption({
         title: {
           text: '异步数据加载示例'
         },
@@ -43,6 +46,26 @@ export default {
           type: 'bar',
           data: []
         }]
+      })
+    },
+    loadData () {
+      this.myChart.showLoading()
+      this.$http({
+        method: 'GET',
+        url: 'http://localhost:3000/barData'
+      }).then(data => {
+        // console.log(data)
+        this.myChart.setOption({
+          xAxis: {
+            data: data.xAxisData
+          },
+          series: [{
+            // 根据名字对应到相应的系列
+            name: '销量',
+            data: data.seriesData
+          }]
+        })
+        this.myChart.hideLoading()
       })
     }
   }
