@@ -42,9 +42,14 @@ const router = new Router({
           component: () => import('@/views/account')
         },
         {
-          name: 'article-image',
+          name: 'image',
           path: '/image',
           component: () => import('@/views/image')
+        },
+        {
+          name: 'fans-overview',
+          path: '/fans/overview',
+          component: () => import('@/views/fans')
         }
       ]
     },
