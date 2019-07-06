@@ -16,7 +16,12 @@
         <el-card :body-style="{ padding: '0px' }">
           <img :src="item.url" class="image" style="max-width: 100%">
           <div style="padding: 10px; display:flex; justift-content: center; ">
-            <el-button type="primary" icon="el-icon-delete" circle plain></el-button>
+            <el-button type="primary"
+             icon="el-icon-delete"
+              circle
+              plain
+              @click="handleDelete(item)"
+              ></el-button>
             <el-button type="primary"
             :icon="item.is_collected ?'el-icon-star-on' : 'el-icon-star-off'"
              circle
@@ -70,6 +75,32 @@ export default {
       }).catch(err => {
         console.log(err)
         this.$message.error(`${collect ? '' : '取消'}收藏失败`)
+      })
+    },
+    handleDelete (item) {
+      this.$confirm('确认删除吗?', '删除提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          method: 'DELETE',
+          url: `/user/images/${item.id}`
+        }).then(data => {
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          // 删除成功，刷新数据列表
+          this.loadImages()
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('删除失败')
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }
