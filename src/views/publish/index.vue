@@ -25,6 +25,12 @@
             </quill-editor>
       </el-form-item>
       <el-form-item label="封面">
+        <el-radio-group v-model="articleForm.cover.type">
+          <el-radio :label="1">单图</el-radio>
+          <el-radio :label="3">三图</el-radio>
+          <el-radio :label="0">无图</el-radio>
+          <el-radio :label="-1">自动</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="频道">
         <!--
