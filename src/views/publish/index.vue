@@ -57,6 +57,11 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
+// 如果是更新，则在第一次更新数据后开启监视
+// 如果是添加，则一上来就开启监视
+// 如果是从更新页面导航到发布页面，则清空表单数据
+// 如果是从发布页面导航到发布页面，则重新加载编辑
+
 // import { constants } from 'crypto'
 export default {
   name: 'AppPublish',
@@ -88,20 +93,20 @@ export default {
    * 注意：这里配置的监视无法取消，会重复监视
    *   如果需要一个可以取消的监视，则需要通过this.$watch发方式进行监视
    */
-  watch: {
-    articleForm: {
-      handler () { // 当被监视数据发生改变时会被调用
-      // 如果是第一次编辑更新导致的数据的改变，不让this.formDirty为true
-        if (this.firstEditData) {
-          this.formDirty = false
-        } else {
-          this.formDirty = true
-        }
-      },
-      deep: true // 对象、数组类型需要配置深度监视，普通数据不需要
-      // immidiate: true或false 默认只有当被监视成员发生改变时才会调用监视函数，如果希望初始的时候就调用一次，则可以配置该值为true
-    }
-  },
+  // watch: {
+  //   articleForm: {
+  //     handler () { // 当被监视数据发生改变时会被调用
+  //     // 如果是第一次编辑更新导致的数据的改变，不让this.formDirty为true
+  //       if (this.firstEditData) {
+  //         this.formDirty = false
+  //       } else {
+  //         this.formDirty = true
+  //       }
+  //     },
+  //     deep: true // 对象、数组类型需要配置深度监视，普通数据不需要
+  //     // immidiate: true或false 默认只有当被监视成员发生改变时才会调用监视函数，如果希望初始的时候就调用一次，则可以配置该值为true
+  //   }
+  // },
   computed: {
     editor () {
       return this.$refs.myQuillEditor.quill
@@ -116,6 +121,10 @@ export default {
   created () {
     if (this.isEdit) {
       this.loadArticle()
+    }
+    // 如果是发布页面，则直接开启监视
+    if (this.$route.name === 'publish') {
+      this.watchForm()
     }
   },
   mounted () {
@@ -135,6 +144,11 @@ export default {
 
         this.articleForm = data
         this.editLoading = false
+        // this.watchForm()
+        this.$nextTick(() => {
+          // 更新数据加载号以后开始监视
+          this.watchForm()
+        })
       }).catch(err => [
         console.log(err),
         this.$message.error('加载文章详情失败')
@@ -188,6 +202,15 @@ export default {
       }).catch(err => {
         console.log(err)
         this.$message.error('发布失败')
+      })
+    },
+    watchForm () {
+      const unWatch = this.$watch('articleForm', function () {
+        this.formDirty = true
+        // 关闭监视器
+        unWatch()
+      }, {
+        deep: true
       })
     }
   },
