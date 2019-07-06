@@ -41,7 +41,7 @@
         <i class="el-icon-chat-line-round"></i>
         <span slot="title">评论列表</span>
       </el-menu-item>
-      <el-menu-item index="1-5">
+      <el-menu-item index="/image">
         <i class="el-icon-paperclip"></i>
         <span slot="title">素材管理</span>
       </el-menu-item>
