@@ -9,7 +9,15 @@
           <el-radio-button label="全部" @click.native="loadImages(false)"></el-radio-button>
           <el-radio-button label="收藏" @click.native="loadImages(true)"></el-radio-button>
         </el-radio-group>
-        <el-button type="primary">上传图片</el-button>
+        <el-upload
+          action="http://ttapi.research.itcast.cn/mp/v1_0/user/images"
+          :show-file-list="false"
+          :headers="{ Authorization: `Bearer ${$store.state.user.token}`}"
+          name="image"
+          v-bind:on-success="handdleUploadSuccess"
+       >
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
     </div>
     <el-row :gutter="20">
       <el-col :span="8" v-for="item in images" :key="item.id">
@@ -105,6 +113,9 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    handdleUploadSuccess () {
+      this.loadImages(false)
     }
   }
 }
