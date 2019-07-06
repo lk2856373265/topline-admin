@@ -59,7 +59,7 @@ import 'quill/dist/quill.bubble.css'
 import { quillEditor } from 'vue-quill-editor'
 // 如果是更新，则在第一次更新数据后开启监视
 // 如果是添加，则一上来就开启监视
-// 如果是从更新页面导航到发布页面，则清空表单数据
+
 // 如果是从发布页面导航到发布页面，则重新加载编辑
 
 // import { constants } from 'crypto'
@@ -85,6 +85,23 @@ export default {
       publishLoading: false,
       formDirty: false,
       firstEditData: false
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      // 对路由变化作出响应...
+      // 如果是从更新页面导航到发布页面，则清空表单数据
+      if (from.name === 'publish-edit') {
+        this.articleForm = {
+          title: '', // 标题
+          content: '', // 内容
+          cover: { // 封面
+            type: 0, // 封面类型 -1:自动，0-无图，1-1张，3-3张
+            images: [] // 图片
+          },
+          channel_id: '' // 频道
+        }
+      }
     }
   },
   /**
@@ -145,6 +162,7 @@ export default {
         this.articleForm = data
         this.editLoading = false
         // this.watchForm()
+        // Vue提供了这样一个API 简单理解就是延时调用
         this.$nextTick(() => {
           // 更新数据加载号以后开始监视
           this.watchForm()
