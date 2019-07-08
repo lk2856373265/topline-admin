@@ -33,9 +33,12 @@
         </el-radio-group>
         <!-- 根据不同的type 遍历显示上传图片组件-->
         <template v-if="articleForm.cover.type > 0">
-          <UploadImage v-for="(item,index) in articleForm.cover.type"
-         :key="index">
-         </UploadImage>
+          <el-row>
+            <el-col  :span="6" v-for="(item,index) in articleForm.cover.type"
+            :key="index">
+            <UploadImage></UploadImage>
+            </el-col>
+          </el-row>
         </template>
       </el-form-item>
       <el-form-item label="频道">
@@ -89,7 +92,7 @@ export default {
         title: '', // 标题
         content: '', // 内容
         cover: { // 封面
-          type: 0, // 封面类型 -1:自动，0-无图，1-1张，3-3张
+          type: 1, // 封面类型 -1:自动，0-无图，1-1张，3-3张
           images: [] // 图片
         },
         channel_id: '' // 频道

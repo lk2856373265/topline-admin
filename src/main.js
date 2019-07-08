@@ -12,8 +12,9 @@ import 'nprogress/nprogress.css'
 
 // 配置axios的基础路由
 // 有了此项配置，就不用每次都写 http://xxxx
-axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
-// 由于后端的数据id超出了Javascript的安全整数范围，会导致整数无法精确子显示
+// axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+axios.defaults.baseURL = 'http://toutiao.course.itcast.cn/mp/v1_0/'
+// 由于后端的数据id超出了Javascript的安全整数范围，会导致整数无法精确显示
 // 使用JSONbig 处理返回数据中超出JavaScript安全整数范围的数字
 axios.defaults.transformResponse = [function (data) {
   // data数据可能不是标准的json格式字符串，会导致JSONbig.parse(data)转换失败报错
